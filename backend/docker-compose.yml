@@ -1,6 +1,7 @@
-# Optional: starts a MySQL 8 database that matches application.properties
-# Run:  docker compose up -d
+name: travel-booking-package
+
 services:
+
   mysql:
     image: mysql:8.0
     container_name: travel-mysql
@@ -11,6 +12,26 @@ services:
       - "3307:3306"
     volumes:
       - mysql_data:/var/lib/mysql
+
+  backend:
+    image: travel-booking-backend:latest
+    container_name: travel-backend
+    environment:
+      DB_HOST: mysql
+      DB_USERNAME: root
+      DB_PASSWORD: root
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+
+  frontend:
+    image: travel-booking-frontend:latest
+    container_name: travel-frontend
+    ports:
+      - "8081:80"
+    depends_on:
+      - backend
 
 volumes:
   mysql_data:
